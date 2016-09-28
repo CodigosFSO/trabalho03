@@ -22,15 +22,29 @@ all:
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(MAKE) $(TARGET)
 
+static: $(OBJ)
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+	@echo criando executável. Carregando bibliotecas estaticamente.
+	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(TARGET)
+	@echo terminado
+
+dynamic: $(OBJ)
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+	@echo criando executável. Carregando bibliotecas estaticamente.
+	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(TARGET)
+	@echo terminado
+
+$(TARGET): $(OBJ)
+	@echo criando executável. Carregando bibliotecas estaticamente.
+	@echo debug2: $< $@
+	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $@
+	@echo terminado
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo construindo o objeto $@
 	@$(CC) -c $(CFLAGS) -I$(INC_DIR) $< -o $@
 	@echo debug: $< $@
 
-$(TARGET): $(OBJ)
-	@echo criando executável...
-	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $@
-	@echo terminado
 
 clean:
 	@echo Limpando....
