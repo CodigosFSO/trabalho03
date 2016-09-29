@@ -24,7 +24,7 @@ int test_prime(int prime)
 {
 	int test_number = 3;
 
-	if(prime % 2 == 0 && prime != 2) {
+	if(prime < 2) {
 		return NOT_PRIME;
 	}
 

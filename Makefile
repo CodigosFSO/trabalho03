@@ -17,6 +17,7 @@ CC = gcc
 CFLAGS = -Wall -g 
 CFLAGS_STATIC = -Wall -g -lprimo
 CFLAGS_DYNAMIC = -Wall -g -lprimo -Wl,-rpath,./lib
+CFLAGS_ON_DEMAND = $(CFLAGS_DYNAMIC) -ldl
 
 LIBRARY_NAME = libprimo
 
@@ -29,6 +30,7 @@ CREATE_DYNAMIC_LIBRARY = $(CC) -shared -fPIC -o $(LIB_DIR)/libprimo.so $(OBJ)
 
 MAIN_A_OBJ = $(CC) -c $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(OBJ_DIR)/$(PROGRAM_A:.c=.o)
 MAIN_B_OBJ = $(CC) -c $(CFLAGS) -I$(INC_DIR) $(PROGRAM_B) -o $(OBJ_DIR)/$(PROGRAM_B:.c=.o)
+MAIN_C_OBJ = $(CC) -c $(CFLAGS) -I$(INC_DIR) $(PROGRAM_C) -o $(OBJ_DIR)/$(PROGRAM_C:.c=.o)
 
 # Main Codes
 PROGRAM_A = q01a.c
@@ -45,7 +47,7 @@ a:
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR)
 	$(MAIN_A_OBJ)
 	$(MAKE) $(OBJ)_static
-	@echo criando biblioteca
+	@echo criando biblioteca estatica
 	$(CREATE_STATIC_LIBRARY)
 	@echo Criando executável com a. Carregando bibliotecas estaticamente...
 	$(CC) -static $(OBJ) $(OBJ_DIR)/$(PROGRAM_A:.c=.o) -L$(LIB_DIR) $(CFLAGS_STATIC) -o $(TARGET_A)
@@ -56,10 +58,21 @@ b:
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR)
 	$(MAIN_B_OBJ)
 	$(MAKE) $(OBJ)_dynamic
-	@echo criando biblioteca
+	@echo criando biblioteca dinâmica
 	$(CREATE_DYNAMIC_LIBRARY)
 	@echo Criando executável com b. Carregando bibliotecas dinamicamente...
 	$(CC) $(OBJ_DIR)/$(PROGRAM_B:.c=.o) -L$(LIB_DIR) $(CFLAGS_DYNAMIC) -o $(TARGET_B)
+	@echo terminado
+
+c:
+	@echo criando diretórios...
+	@mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR)
+	$(MAIN_C_OBJ)
+	$(MAKE) $(OBJ)_dynamic
+	@echo criando biblioteca dinâmica
+	$(CREATE_DYNAMIC_LIBRARY)
+	@echo Criando executável com c. Carregando bibliotecas por demanda.
+	$(CC) $(OBJ_DIR)/$(PROGRAM_C:.c=.o) -L$(LIB_DIR) $(CFLAGS_ON_DEMAND) -o $(TARGET_C)
 	@echo terminado
 
 $(OBJ_DIR)/%.o_static: $(SRC_DIR)/%.c 
