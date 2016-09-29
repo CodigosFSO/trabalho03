@@ -22,9 +22,12 @@ LIBRARY_NAME = libprimo
 SRC = ${wildcard $(SRC_DIR)/*.c}
 OBJ = ${addprefix $(OBJ_DIR)/, ${notdir ${SRC:.c=.o}}}
 
-CREATE_LIBRARY = ar cr $(LIB_DIR)/libprimo.a $(OBJ_DIR)/prime.o
+CREATE_STATIC_LIBRARY = ar cr $(LIB_DIR)/libprimo.a $(OBJ)
+
+CREATE_DYNAMIC_LIBRARY = $(CC) -shared -fPIC -o $(LIB_DIR)/libprimo.so $(OBJ)
 
 MAIN_A_OBJ = $(CC) -c $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(OBJ_DIR)/$(PROGRAM_A:.c=.o)
+MAIN_B_OBJ = $(CC) -c $(CFLAGS) -I$(INC_DIR) $(PROGRAM_B) -o $(OBJ_DIR)/$(PROGRAM_B:.c=.o)
 
 # Main Codes
 PROGRAM_A = q01a.c
@@ -42,7 +45,7 @@ a:
 	$(MAIN_A_OBJ)
 	$(MAKE) $(OBJ)_static
 	@echo criando biblioteca
-	$(CREATE_LIBRARY)
+	$(CREATE_STATIC_LIBRARY)
 	@echo Criando executável com a. Carregando bibliotecas estaticamente...
 	$(CC) $(OBJ) $(OBJ_DIR)/$(PROGRAM_A:.c=.o) -L$(LIB_DIR) $(CFLAGS2) -o $(TARGET_A)
 	@echo terminado
@@ -50,17 +53,21 @@ a:
 b:
 	@echo criando diretórios...
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR)
-	$(MAIN_A_OBJ)
-	$(MAKE) $(OBJ)
+	$(MAIN_B_OBJ)
+	$(MAKE) $(OBJ)_dynamic
 	@echo criando biblioteca
-	$(CREATE_LIBRARY)
-	@echo Criando executável com a. Carregando bibliotecas dinâmicamente...
-	$(CC) $(OBJ) $(OBJ_DIR)/$(PROGRAM_A:.c=.o) -L$(LIB_DIR) $(CFLAGS2) -o $(TARGET)
+	$(CREATE_DYNAMIC_LIBRARY)
+	@echo Criando executável com b. Carregando bibliotecas dinamicamente...
+	$(CC) $(OBJ) $(OBJ_DIR)/$(PROGRAM_B:.c=.o) -L$(LIB_DIR) $(CFLAGS2) -o $(TARGET_B)
 	@echo terminado
 
 $(OBJ_DIR)/%.o_static: $(SRC_DIR)/%.c 
 	@echo construindo o objeto $(@:_static=)
 	$(CC) -c $(CFLAGS) -I$(INC_DIR) $< -o $(@:_static=)
+
+$(OBJ_DIR)/%.o_dynamic: $(SRC_DIR)/%.c 
+	@echo construindo o objeto $(@:_dynamic=)
+	$(CC) -c $(CFLAGS) -fPIC -I$(INC_DIR) $< -o $(@:_dynamic=)
 
 clean:
 	@echo Limpando....
