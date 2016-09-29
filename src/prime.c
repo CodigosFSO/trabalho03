@@ -12,9 +12,7 @@ int generate_prime()
 	srand(time(NULL));
 
 	while(result != PRIME) {
-		printf("iteração %d\n", i);
 		prime = rand() % RAND_MAX;
-		printf("Numero: %d\n", prime);
 		result = test_prime(prime);
 		i++;
 	}
@@ -37,8 +35,6 @@ int test_prime(int prime)
 
 		test_number += 2;
 	}
-
-	printf("test_number");
 
 	return PRIME;
 }

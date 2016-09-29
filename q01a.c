@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#include "prime.h"
+#include <prime.h>
 
 enum {EXIT, GENERATE_PRIME, TEST_PRIME};
 
