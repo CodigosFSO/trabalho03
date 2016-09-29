@@ -15,7 +15,8 @@ TARGET_C = $(BIN_DIR)/$(NAME_C)
 
 CC = gcc
 CFLAGS = -Wall -g 
-CFLAGS2 = -Wall -g -lprimo
+CFLAGS_STATIC = -Wall -g -lprimo
+CFLAGS_DYNAMIC = -Wall -g -lprimo -Wl,-rpath,./lib
 
 LIBRARY_NAME = libprimo
 
@@ -47,7 +48,7 @@ a:
 	@echo criando biblioteca
 	$(CREATE_STATIC_LIBRARY)
 	@echo Criando executável com a. Carregando bibliotecas estaticamente...
-	$(CC) $(OBJ) $(OBJ_DIR)/$(PROGRAM_A:.c=.o) -L$(LIB_DIR) $(CFLAGS2) -o $(TARGET_A)
+	$(CC) -static $(OBJ) $(OBJ_DIR)/$(PROGRAM_A:.c=.o) -L$(LIB_DIR) $(CFLAGS_STATIC) -o $(TARGET_A)
 	@echo terminado
 
 b:
@@ -58,7 +59,7 @@ b:
 	@echo criando biblioteca
 	$(CREATE_DYNAMIC_LIBRARY)
 	@echo Criando executável com b. Carregando bibliotecas dinamicamente...
-	$(CC) $(OBJ) $(OBJ_DIR)/$(PROGRAM_B:.c=.o) -L$(LIB_DIR) $(CFLAGS2) -o $(TARGET_B)
+	$(CC) $(OBJ_DIR)/$(PROGRAM_B:.c=.o) -L$(LIB_DIR) $(CFLAGS_DYNAMIC) -o $(TARGET_B)
 	@echo terminado
 
 $(OBJ_DIR)/%.o_static: $(SRC_DIR)/%.c 
