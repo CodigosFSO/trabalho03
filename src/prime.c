@@ -1,18 +1,22 @@
 #include "prime.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 int generate_prime()
 {
 	int prime;
 	int result = NOT_PRIME;
-
+	int i = 0;
 	srand(time(NULL));
 
 	while(result != PRIME) {
-		prime = rand() % 1000000;
+		printf("iteração %d\n", i);
+		prime = rand() % RAND_MAX;
+		printf("Numero: %d\n", prime);
 		result = test_prime(prime);
+		i++;
 	}
 
 	return prime;
@@ -33,6 +37,8 @@ int test_prime(int prime)
 
 		test_number += 2;
 	}
+
+	printf("test_number");
 
 	return PRIME;
 }

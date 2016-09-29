@@ -8,7 +8,9 @@ BIN_DIR = bin
 TARGET = $(BIN_DIR)/$(NAME)
 
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g 
+
+LIBRARY_NAME = libprimo
 
 SRC = ${wildcard $(SRC_DIR)/*.c}
 OBJ = ${addprefix $(OBJ_DIR)/, ${notdir ${SRC:.c=.o}}}
@@ -22,13 +24,7 @@ all:
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	$(MAKE) $(TARGET)
 
-static: $(OBJ)
-	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
-	@echo criando executável. Carregando bibliotecas estaticamente.
-	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(TARGET)
-	@echo terminado
-
-dynamic: $(OBJ)
+a: $(OBJ)
 	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
 	@echo criando executável. Carregando bibliotecas estaticamente.
 	$(CC) $(OBJ) $(CFLAGS) -I$(INC_DIR) $(PROGRAM_A) -o $(TARGET)
